@@ -14,7 +14,7 @@ public class ScanResult
     public List<string> ImagePaths { get; set; } = new();
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public List<string> Errors { get; set; } = new();
-    [JsonIgnore]
+    [JsonPropertyName("backend_document_id")]
     public string? BackendDocumentId { get; set; }
 }
 

@@ -124,7 +124,7 @@ export default function ScanPage() {
         imageUrl: p.image_url,
         thumbnailUrl: p.thumbnail_url,
         pageNumber: p.page_number,
-        rotation: 0,
+        rotation: p.rotation || 0,
       }));
 
       setPages(scannedPages);

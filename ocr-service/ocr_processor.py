@@ -80,7 +80,7 @@ def preprocess_image(image: np.ndarray) -> np.ndarray:
 
 
 class OcrProcessor:
-    def __init__(self, lang: str = "spanish", use_gpu: bool = False):
+    def __init__(self, lang: str = "es", use_gpu: bool = False):
         self.lang = lang
         self.use_gpu = use_gpu
         logger.info("Initializing PaddleOCR with language='%s', use_gpu=%s", lang, use_gpu)

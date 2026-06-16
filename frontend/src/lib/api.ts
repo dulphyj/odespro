@@ -82,8 +82,7 @@ export const auth = {
       username,
       password,
     }),
-  logout: () => api.post("/auth/logout"),
-  getMe: () => api.get<User>("/auth/me"),
+  getMe: () => api.get<ApiResponse<User>>("/auth/me"),
   changePassword: (current_password: string, new_password: string) =>
     api.put("/auth/change-password", { current_password, new_password }),
 };

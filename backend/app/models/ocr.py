@@ -20,7 +20,7 @@ class OcrResult(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     document_id: Mapped[int] = mapped_column(ForeignKey("documents.id", ondelete="CASCADE"))
     page_id: Mapped[Optional[int]] = mapped_column(ForeignKey("document_pages.id", ondelete="SET NULL"), nullable=True)
-    full_text: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    full_text: Mapped[str] = mapped_column(Text, nullable=False)
     confidence: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
     processing_time_ms: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     language: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)

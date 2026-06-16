@@ -5,8 +5,8 @@ export interface User {
   full_name: string;
   is_active: boolean;
   is_superuser: boolean;
-  role_id: number | null;
-  role?: Role;
+  role_id?: number | null;
+  roles?: Role[];
   created_at: string;
   updated_at: string;
 }
@@ -17,6 +17,7 @@ export interface UserCreate {
   password: string;
   full_name: string;
   role_id?: number | null;
+  role_ids?: number[];
   is_active?: boolean;
 }
 
@@ -25,6 +26,7 @@ export interface UserUpdate {
   full_name?: string;
   is_active?: boolean;
   role_id?: number | null;
+  role_ids?: number[];
 }
 
 export interface Role {
@@ -38,10 +40,10 @@ export interface Role {
 
 export interface Permission {
   id: number;
-  codename: string;
+  code: string;
   name: string;
   description: string | null;
-  group: string;
+  module: string;
 }
 
 export interface RoleCreate {
@@ -57,7 +59,8 @@ export interface Folder {
   parent_id: number | null;
   children?: Folder[];
   document_count?: number;
-  created_by: number;
+  owner_id: number;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -76,26 +79,42 @@ export interface FolderUpdate {
 
 export type DocumentType = "pdf" | "image" | "word" | "excel" | "text" | "other";
 
+export interface DocumentTypeItem {
+  id: number;
+  code: string;
+  name: string;
+  description?: string | null;
+  icon?: string | null;
+  retention_days?: number | null;
+  requires_ocr: boolean;
+  is_active: boolean;
+}
+
 export interface Document {
   id: number;
   title: string;
   description: string | null;
-  file: string;
-  file_name: string;
+  file_name: string | null;
   file_size: number;
-  file_type: DocumentType;
-  mime_type: string;
+  mime_type: string | null;
   folder_id: number | null;
   folder?: Folder;
-  page_count: number | null;
-  tags: string[];
+  document_type_id?: number | null;
+  document_type?: DocumentTypeItem;
+  page_count: number;
+  storage_path?: string | null;
+  checksum: string | null;
+  is_indexed: boolean;
+  classification?: string | null;
+  classification_confidence?: number | null;
   metadata: Record<string, unknown>;
-  ocr_processed: boolean;
-  ocr_text: string | null;
-  checksum: string;
-  is_favorite: boolean;
-  created_by: number;
-  created_by_user?: User;
+  is_active: boolean;
+  owner_id: number;
+  owner?: User;
+  pages?: DocumentPage[];
+  versions?: DocumentVersion[];
+  ocr_results?: OcrResult[];
+  current_version: number;
   created_at: string;
   updated_at: string;
 }
@@ -123,8 +142,11 @@ export interface DocumentPage {
   page_number: number;
   image_url: string;
   thumbnail_url: string;
-  width: number;
-  height: number;
+  storage_path: string;
+  thumbnail_path?: string | null;
+  width: number | null;
+  height: number | null;
+  rotation: number;
   ocr_text: string | null;
   ocr_confidence: number | null;
 }
@@ -133,12 +155,12 @@ export interface DocumentVersion {
   id: number;
   document_id: number;
   version_number: number;
-  file: string;
-  file_name: string;
+  file_name: string | null;
   file_size: number;
-  checksum: string;
-  created_by: number;
-  created_by_user?: User;
+  storage_path?: string | null;
+  checksum: string | null;
+  changes_description?: string | null;
+  created_by: number | null;
   created_at: string;
 }
 
@@ -146,21 +168,23 @@ export interface OcrResult {
   id: number;
   document_id: number;
   page_id: number | null;
-  page_number: number;
-  text: string;
-  confidence: number;
-  raw_data: Record<string, unknown>;
-  processing_time_ms: number;
+  full_text: string;
+  confidence: number | null;
+  raw_data: Record<string, unknown> | null;
+  processing_time_ms: number | null;
+  language: string | null;
   created_at: string;
 }
 
 export interface Scanner {
   id: string;
   name: string;
-  device_id: string;
-  vendor: string;
-  is_available: boolean;
-  connection: string;
+  device_id?: string;
+  vendor?: string;
+  manufacturer?: string;
+  model?: string;
+  is_available?: boolean;
+  connection?: string;
 }
 
 export interface ScanRequest {
@@ -170,6 +194,8 @@ export interface ScanRequest {
   format?: "pdf" | "jpeg" | "png" | "tiff";
   duplex?: boolean;
   source?: "flatbed" | "adf";
+  paper_size?: string;
+  page_count?: number;
   document_title?: string;
   folder_id?: number | null;
 }
@@ -202,9 +228,11 @@ export interface AuditLog {
   user?: User;
   action: string;
   entity_type: string;
-  entity_id: number | null;
+  entity_id: string | null;
+  username?: string | null;
+  description?: string | null;
   details: Record<string, unknown>;
-  ip_address: string;
+  ip_address: string | null;
   created_at: string;
 }
 

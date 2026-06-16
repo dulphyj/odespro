@@ -115,7 +115,7 @@ CREATE TABLE IF NOT EXISTS document_versions (
     storage_path TEXT,
     checksum VARCHAR(64),
     changes_description TEXT,
-    created_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE(document_id, version_number)
 );
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS search_vectors (
     id SERIAL PRIMARY KEY,
     document_id INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
     content_text TEXT NOT NULL,
-    embedding vector(768),
+    embedding JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

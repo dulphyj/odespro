@@ -1,11 +1,15 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
-COPY package.json ./
-RUN npm install
+COPY package.json package-lock.json* ./
+RUN npm ci
 
 FROM node:20-alpine AS builder
 WORKDIR /app
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_SCANNER_AGENT_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SCANNER_AGENT_URL=$NEXT_PUBLIC_SCANNER_AGENT_URL
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build

@@ -3,7 +3,8 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libgl1 \
-    libglib2.0-0t64 \
+    libglib2.0-0 \
+    poppler-utils \
     && rm -rf /var/lib/apt/lists/*
 COPY requirements.txt .
 ENV PIP_DEFAULT_TIMEOUT=300

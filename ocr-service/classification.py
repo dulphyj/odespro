@@ -135,7 +135,7 @@ class ClassificationEngine:
                     r"saludos",
                     r"Sr\.",
                     r"Sra\.",
-                    r"reciba\s+un\s+ cordial\s+saludo",
+                    r"reciba\s+un\s+cordial\s+saludo",
                     r"le\s+escribo",
                 ],
                 weight=0.8,

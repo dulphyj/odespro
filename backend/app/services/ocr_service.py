@@ -59,7 +59,7 @@ async def process_document_ocr(
                 response = await client.post(
                     f"{settings.OCR_SERVICE_URL}/ocr/file",
                     files=files,
-                    params={"language": "latin"},
+                    params={"language": "es"},
                 )
                 response.raise_for_status()
                 ocr_data = response.json()
@@ -80,7 +80,7 @@ async def process_document_ocr(
                 full_text=full_text,
                 confidence=confidence,
                 processing_time_ms=processing_time,
-                language=ocr_data.get("language", "latin"),
+                language=ocr_data.get("language", "es"),
                 raw_data=ocr_data,
             )
             db.add(ocr_result)

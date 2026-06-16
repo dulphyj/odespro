@@ -24,7 +24,6 @@ Write-Host "Backup destination: $backupPath" -ForegroundColor Yellow
 # Backup PostgreSQL
 if (-not $NoDatabase) {
     Write-Host "Backing up PostgreSQL database..." -ForegroundColor Yellow
-    $ pg container
     $containerName = "odespro-postgres"
     $backupFile = Join-Path -LiteralPath $backupPath -ChildPath "odespro_db_$timestamp.sql"
     

@@ -33,10 +33,10 @@ services:
       - minio_data:/data
     command: server /data --console-address ":9001"
     healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
+      test: ["CMD-SHELL", "mc alias set local http://localhost:9000 odespro odespro_minio_2026 && mc ready local"]
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 5
 
   backend:
     build:
@@ -68,12 +68,15 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost/api/v1
+        NEXT_PUBLIC_SCANNER_AGENT_URL: http://localhost:5000
     container_name: odespro-frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000/api/v1
+      NEXT_PUBLIC_API_URL: http://localhost/api/v1
       NEXT_PUBLIC_SCANNER_AGENT_URL: http://localhost:5000
     depends_on:
       - backend

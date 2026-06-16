@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     global ocr_processor, classifier
     logger.info("Starting OCR Service...")
     os.makedirs(TEMP_DIR, exist_ok=True)
-    ocr_processor = OcrProcessor(lang="latin", use_gpu=False)
+    ocr_processor = OcrProcessor(lang="es", use_gpu=False)
     classifier = ClassificationEngine()
     logger.info("OCR Service ready on port 8001")
     yield

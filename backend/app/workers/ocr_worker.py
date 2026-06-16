@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import async_session_factory
 from app.services.ocr_service import process_document_ocr
 from app.services.document_service import get_document
-from app.services.classification_service import classify_document_by_text
 
 logger = logging.getLogger(__name__)
 
@@ -15,9 +14,7 @@ async def process_document_background(document_id: int, user_id: int | None = No
             if not doc:
                 logger.error(f"Document {document_id} not found")
                 return
-            ocr_results = await process_document_ocr(db, document_id, pages, user_id)
-            if ocr_results:
-                await classify_document_by_text(db, document_id)
+            ocr_results = await process_document_ocr(db, document_id, pages)
             logger.info(f"Document {document_id} OCR completed: {len(ocr_results)} pages")
     except Exception as e:
         logger.error(f"OCR processing failed for document {document_id}: {e}", exc_info=True)

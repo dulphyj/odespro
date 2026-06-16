@@ -19,6 +19,9 @@ class ScanRequest(BaseModel):
     resolution: int = 300
     color_mode: str = "color"
     duplex: bool = False
+    source: str = "flatbed"
+    paper_size: str = "A4"
+    page_count: int = 1
     folder_id: Optional[int] = None
     document_title: Optional[str] = None
 
@@ -28,6 +31,9 @@ class ScanPdfRequest(BaseModel):
     resolution: int = 300
     color_mode: str = "color"
     duplex: bool = False
+    source: str = "flatbed"
+    paper_size: str = "A4"
+    page_count: int = 1
     folder_id: Optional[int] = None
     document_title: Optional[str] = None
 
@@ -37,6 +43,10 @@ class ScanImagesRequest(BaseModel):
     resolution: int = 300
     color_mode: str = "color"
     duplex: bool = False
+    source: str = "flatbed"
+    format: str = "jpeg"
+    paper_size: str = "A4"
+    page_count: int = 1
     folder_id: Optional[int] = None
     document_title: Optional[str] = None
 
@@ -57,6 +67,7 @@ SOURCE_MAP = {
 
 def _map_scan_request(body: BaseModel) -> dict:
     d = body.model_dump(exclude_none=True)
+    fmt_map = {"jpeg": "Jpeg", "png": "Png", "tiff": "Tiff", "pdf": "Pdf"}
     return {
         "scannerId": d.get("device_id", ""),
         "dpi": d.get("resolution", 300),
@@ -65,7 +76,7 @@ def _map_scan_request(body: BaseModel) -> dict:
         "useAdf": SOURCE_MAP.get(d.get("source", "flatbed"), False),
         "paperSize": d.get("paper_size", "A4"),
         "pageCount": d.get("page_count", 1),
-        "fileFormat": "Pdf",
+        "fileFormat": fmt_map.get(d.get("format", "pdf"), "Pdf"),
         "compressionLevel": 75,
     }
 
@@ -167,7 +178,6 @@ async def scan_to_images(
     current_user: User = Depends(get_current_user),
 ):
     payload = _map_scan_request(body)
-    payload["fileFormat"] = "Jpeg"
     result = await _call_scanner_agent("/api/scan/images", payload, method="POST")
     mapped = _map_scan_result(result)
     await log_action(

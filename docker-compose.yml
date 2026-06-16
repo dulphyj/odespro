@@ -3,8 +3,6 @@ services:
     image: pgvector/pgvector:pg17
     container_name: odespro-postgres
     restart: unless-stopped
-    ports:
-      - "5432:5432"
     environment:
       POSTGRES_DB: odespro
       POSTGRES_USER: odespro
@@ -23,9 +21,6 @@ services:
     image: minio/minio:latest
     container_name: odespro-minio
     restart: unless-stopped
-    ports:
-      - "9000:9000"
-      - "9001:9001"
     environment:
       MINIO_ROOT_USER: odespro
       MINIO_ROOT_PASSWORD: odespro_minio_2026
@@ -44,8 +39,6 @@ services:
       dockerfile: Dockerfile
     container_name: odespro-backend
     restart: unless-stopped
-    ports:
-      - "8000:8000"
     environment:
       DATABASE_URL: postgresql+asyncpg://odespro:odespro_secret_2026@postgres:5432/odespro
       MINIO_ENDPOINT: minio:9000
@@ -57,7 +50,7 @@ services:
       ACCESS_TOKEN_EXPIRE_MINUTES: 60
       OCR_SERVICE_URL: http://ocr-service:8001
       SCANNER_AGENT_URL: http://scanner-agent:5000
-      CORS_ORIGINS: '["http://localhost:3000","http://frontend:3000","http://localhost","http://127.0.0.1"]'
+      CORS_ORIGINS: '["http://localhost:3000","http://frontend:3000","http://localhost","http://127.0.0.1","http://localhost:9000"]'
     depends_on:
       postgres:
         condition: service_healthy
@@ -69,15 +62,11 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_API_URL: http://localhost/api/v1
-        NEXT_PUBLIC_SCANNER_AGENT_URL: http://localhost:5000
+        NEXT_PUBLIC_API_URL: /api/v1
     container_name: odespro-frontend
     restart: unless-stopped
-    ports:
-      - "3000:3000"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost/api/v1
-      NEXT_PUBLIC_SCANNER_AGENT_URL: http://localhost:5000
+      NEXT_PUBLIC_API_URL: /api/v1
     depends_on:
       - backend
 
@@ -87,8 +76,6 @@ services:
       dockerfile: Dockerfile
     container_name: odespro-ocr
     restart: unless-stopped
-    ports:
-      - "8001:8001"
     environment:
       PADDLE_OCR_LANG: spanish
     volumes:
@@ -102,8 +89,6 @@ services:
       dockerfile: Dockerfile.selfcontained
     container_name: odespro-scanner
     restart: unless-stopped
-    ports:
-      - "5000:5000"
     # Privileged mode is needed for USB scanner access (SANE)
     # On Windows + Docker Desktop running with WSL2 backend:
     #   install usbipd-win -> attach scanner to WSL -> container sees it
@@ -119,7 +104,7 @@ services:
     container_name: odespro-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "9000:9000"
     volumes:
       - ./infra/nginx/default.conf:/etc/nginx/conf.d/default.conf
     depends_on:

@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "Jbfo0dNDG/e68DsscWl24y5wd2imssWF7YBHJb7+xZ0=",
+  "Source": "ScannerAgent",
+  "BasePath": "_content/ScannerAgent",
+  "Mode": "Default",
+  "ManifestType": "Publish",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
